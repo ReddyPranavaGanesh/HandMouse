@@ -1,0 +1,18 @@
+# Swift package manager
+.build/
+DerivedData/
+
+# Compiled App (distributed via GitHub Releases)
+HandMouse.app/
+*.zip
+
+# macOS metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Temp and extraneous assets
+iphone_duo*
+frame*.jpg
+gen_inputs.json
+.keep

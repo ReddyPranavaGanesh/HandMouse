@@ -127,7 +127,7 @@ public struct CameraPreviewWithSkeletonView: View {
         case .pinch: return .orange
         case .pinchAndMove: return .red
         case .peaceScroll, .peaceScrollUp, .peaceScrollDown: return .cyan
-        case .fistRightClick: return .purple
+        case .rightClick: return .purple
         }
     }
 }
@@ -216,16 +216,29 @@ public struct SkeletonCanvas: View {
                 context.draw(peaceText, at: CGPoint(x: midX, y: midY))
             }
             
-            // 6. Highlight Fist (Right Click)
-            if landmarks.isFist, let wrist = landmarks.wrist {
-                let pW = toCanvasPoint(wrist)
-                let midX = pW.x
-                let midY = pW.y - 35
-                let fistRect = CGRect(x: midX - 18, y: midY - 18, width: 36, height: 36)
-                context.fill(Path(ellipseIn: fistRect), with: .color(Color.purple.opacity(0.85)))
-                context.stroke(Path(ellipseIn: fistRect), with: .color(.white), lineWidth: 2)
-                let fistText = Text("✊").font(.system(size: 20))
-                context.draw(fistText, at: CGPoint(x: midX, y: midY))
+            // 6. Highlight Middle Pinch (Right Click: Thumb + Middle)
+            if let tTip = landmarks.thumbTip, let mTip = landmarks.middleTip {
+                let ptThumb = toCanvasPoint(tTip)
+                let ptMiddle = toCanvasPoint(mTip)
+                let mDist = landmarks.middlePinchDistance ?? 1.0
+                
+                if mDist < 0.38 {
+                    var mPinchPath = Path()
+                    mPinchPath.move(to: ptThumb)
+                    mPinchPath.addLine(to: ptMiddle)
+                    let mPinchColor = mDist < 0.28 ? Color.purple : Color.purple.opacity(0.5)
+                    context.stroke(mPinchPath, with: .color(mPinchColor), lineWidth: 4.5)
+                    
+                    if mDist < 0.28 {
+                        let midX = (ptThumb.x + ptMiddle.x) / 2
+                        let midY = (ptThumb.y + ptMiddle.y) / 2
+                        let rightBadge = CGRect(x: midX - 14, y: midY - 14, width: 28, height: 28)
+                        context.fill(Path(ellipseIn: rightBadge), with: .color(Color.purple.opacity(0.85)))
+                        context.stroke(Path(ellipseIn: rightBadge), with: .color(.white), lineWidth: 2)
+                        let badgeText = Text("👌").font(.system(size: 15))
+                        context.draw(badgeText, at: CGPoint(x: midX, y: midY))
+                    }
+                }
             }
         }
     }

@@ -11,7 +11,7 @@ public enum GestureType: String, CaseIterable {
     case peaceScroll = "Peace Sign (Scroll)"
     case peaceScrollUp = "Scrolling Up"
     case peaceScrollDown = "Scrolling Down"
-    case fistRightClick = "Right Click"
+    case rightClick = "Right Click (Middle + Thumb)"
     
     public var icon: String {
         switch self {
@@ -21,7 +21,7 @@ public enum GestureType: String, CaseIterable {
         case .pinch: return "hand.pinch"
         case .pinchAndMove: return "hand.draw.fill"
         case .peaceScroll, .peaceScrollUp, .peaceScrollDown: return "v.circle.fill"
-        case .fistRightClick: return "hand.raised.fill"
+        case .rightClick: return "hand.pinch.fill"
         }
     }
     
@@ -33,7 +33,7 @@ public enum GestureType: String, CaseIterable {
         case .pinch: return "🤏"
         case .pinchAndMove: return "✊"
         case .peaceScroll, .peaceScrollUp, .peaceScrollDown: return "✌️"
-        case .fistRightClick: return "👌"
+        case .rightClick: return "👌"
         }
     }
 }
@@ -71,7 +71,7 @@ public class GestureRecognizer {
     private var isInPinchAndMove: Bool = false
     private var lastPinchClickTime: Double = 0
     
-    // Right Click (Fist or Middle Pinch) tracking
+    // Right Click (Middle + Thumb) tracking
     private var hasFiredRightClick: Bool = false
     private var lastRightClickTime: Double = 0
     
@@ -118,12 +118,13 @@ public class GestureRecognizer {
         let currentPos = MouseController.shared.currentPosition
         
         // -----------------------------------------------------------------
-        // 1. RIGHT CLICK: Fist Clench (✊) OR Middle Pinch (Thumb+Middle)
+        // 1. RIGHT CLICK: Touching Middle Finger and Thumb (👌)
         // -----------------------------------------------------------------
-        let isMiddlePinch = (landmarks.middlePinchDistance ?? 1.0) < pinchThreshold
-        let isFistClench = landmarks.isFist
+        let indexPinchDist = landmarks.pinchDistance ?? 1.0
+        let middlePinchDist = landmarks.middlePinchDistance ?? 1.0
+        let isMiddlePinch = middlePinchDist < pinchThreshold && (middlePinchDist < indexPinchDist)
         
-        if isFistClench || isMiddlePinch {
+        if isMiddlePinch {
             if isInPinchAndMove {
                 MouseController.shared.endLeftDrag(at: currentPos)
                 isInPinchAndMove = false
@@ -131,19 +132,18 @@ public class GestureRecognizer {
             }
             
             if !hasFiredRightClick {
-                if timestamp - lastRightClickTime > 0.35 {
+                if timestamp - lastRightClickTime > 0.25 {
                     hasFiredRightClick = true
                     lastRightClickTime = timestamp
                     
                     MouseController.shared.rightClick(at: currentPos)
-                    let reason = isFistClench ? "✊ Right Click (Fist)" : "👌 Right Click (Middle Pinch)"
-                    updateState(.fistRightClick, description: reason)
+                    updateState(.rightClick, description: "👌 Right Click (Middle + Thumb)")
                 }
             } else {
-                updateState(.fistRightClick, description: "Right Click Active")
+                updateState(.rightClick, description: "👌 Right Click (Middle + Thumb)")
             }
             return
-        } else {
+        } else if middlePinchDist > pinchReleaseThreshold {
             hasFiredRightClick = false
         }
         
@@ -151,7 +151,7 @@ public class GestureRecognizer {
         // 2. PINCH & MOVE (WINDOW DRAGGING) & LEFT CLICK
         // -----------------------------------------------------------------
         if let pinchDist = landmarks.pinchDistance {
-            if !isPinching && pinchDist < pinchThreshold {
+            if !isPinching && pinchDist < pinchThreshold && pinchDist < middlePinchDist {
                 // Pinch began
                 isPinching = true
                 pinchStartTime = timestamp

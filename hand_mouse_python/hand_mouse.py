@@ -191,23 +191,25 @@ def main():
                 smooth_x = alpha * target_x + (1 - alpha) * smooth_x
                 smooth_y = alpha * target_y + (1 - alpha) * smooth_y
 
-                # 1. RIGHT CLICK: Fist Clench (✊) OR Middle Pinch (Thumb + Middle)
-                if is_fist or middle_pinch_d < 0.28:
+                # 1. RIGHT CLICK: Touching Middle Finger and Thumb (👌)
+                if middle_pinch_d < 0.28 and middle_pinch_d < pinch_d:
                     if in_drag:
                         mouse.end_left_drag(smooth_x, smooth_y)
                         in_drag = False
                         is_pinching = False
 
                     if not has_fired_right:
-                        if current_time - last_right_time > 0.35:
+                        if current_time - last_right_time > 0.25:
                             has_fired_right = True
                             last_right_time = current_time
                             mouse.right_click(smooth_x, smooth_y)
-                            gesture_text = "Right Click (Fist / Middle Pinch)"
+                            gesture_text = "Right Click (Middle + Thumb 👌)"
                             gesture_color = (255, 0, 255)
                     else:
-                        gesture_text = "Right Click Active"
+                        gesture_text = "Right Click Active (👌)"
                         gesture_color = (200, 0, 200)
+                elif middle_pinch_d > 0.38:
+                    has_fired_right = False
 
                 # 2. PINCH LOGIC: Left Click & Window Dragging
                 elif pinch_d < 0.28 and not is_pinching:

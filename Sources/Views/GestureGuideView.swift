@@ -67,12 +67,12 @@ public struct GestureGuideView: View {
                 gestureCard(
                     number: "5",
                     emoji: "👌",
-                    icon: "hand.raised.fill",
-                    title: "Close Fist or Middle Pinch",
+                    icon: "hand.pinch.fill",
+                    title: "Middle Finger & Thumb",
                     subtitle: "Right Click",
-                    description: "Close index finger into a fist (✊) OR pinch thumb and middle finger (👌) for a Right Click.",
+                    description: "Touch your middle fingertip and thumb tip together to perform a Right Click.",
                     color: .purple,
-                    isActive: currentGesture == .fistRightClick
+                    isActive: currentGesture == .rightClick
                 )
             }
         }

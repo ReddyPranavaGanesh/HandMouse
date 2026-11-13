@@ -14,7 +14,7 @@ Built with Apple's **Vision Framework** (`VNDetectHumanHandPoseRequest`), **AVFo
 | **2. Left Click** | Quick **pinch** (touch thumb and index tips together and release within 0.3s) | Performs an instantaneous **Left Click** | 🤏 **Left Click** *(Orange)* |
 | **3. Move Windows (Drag)** | **Pinch and hold for >0.3s**, then move your hand | **Holds Left Click down** and drags the window. Release to drop! | ✊ **Moving Window (Left Drag)** *(Red)* |
 | **4. Peace Sign Scroll** | Hold **2-finger Peace Sign (✌️)** and move hand **up or down** | Moving hand **upwards** scrolls **up**; moving hand **downwards** scrolls **down** | ✌️ **Scrolling Up ⬆️ / Down ⬇️** *(Cyan)* |
-| **5. Right Click** | **Close index finger to form a fist (✊)** OR **pinch thumb + middle finger (👌)** | Performs a **Right Click** | ✊ / 👌 **Right Click** *(Purple)* |
+| **5. Right Click** | **Touch middle fingertip and thumb tip together (👌)** | Performs a **Right Click** | 👌 **Right Click (Middle + Thumb)** *(Purple)* |
 
 ---
 

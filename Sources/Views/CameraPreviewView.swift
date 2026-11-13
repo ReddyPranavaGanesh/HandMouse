@@ -81,7 +81,7 @@ public struct CameraPreviewWithSkeletonView: View {
                     .cornerRadius(12)
                 }
                 
-                // Floating Gesture Status Pill at Bottom of Camera
+                // Floating Gesture Status Pill at Bottom of Camera (Liquid Glass Pill)
                 VStack {
                     Spacer()
                     HStack(spacing: 8) {
@@ -89,7 +89,7 @@ public struct CameraPreviewWithSkeletonView: View {
                             .font(.system(size: 16))
                         
                         Image(systemName: appState.currentGesture.icon)
-                            .font(.system(size: 14, weight: .bold))
+                            .font(.system(size: 13, weight: .bold))
                             .foregroundColor(gestureColor(appState.currentGesture))
                         
                         Text(appState.gestureDescription)
@@ -99,18 +99,21 @@ public struct CameraPreviewWithSkeletonView: View {
                         Spacer()
                         
                         Text("\(Int(appState.fps)) FPS")
-                            .font(.system(size: 11, weight: .medium, design: .monospaced))
-                            .foregroundColor(.white.opacity(0.7))
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(Color.black.opacity(0.5))
-                            .cornerRadius(4)
+                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .foregroundColor(.white.opacity(0.85))
+                            .padding(.horizontal, 7)
+                            .padding(.vertical, 3)
+                            .background(Color.white.opacity(0.12))
+                            .cornerRadius(6)
                     }
                     .padding(.horizontal, 14)
-                    .padding(.vertical, 8)
-                    .background(.ultraThinMaterial)
-                    .cornerRadius(8)
-                    .padding(10)
+                    .padding(.vertical, 10)
+                    .liquidGlassCard(
+                        cornerRadius: 14,
+                        isGlowing: appState.currentGesture != .none && appState.currentGesture != .idle,
+                        glowColor: gestureColor(appState.currentGesture)
+                    )
+                    .padding(12)
                 }
             }
         }

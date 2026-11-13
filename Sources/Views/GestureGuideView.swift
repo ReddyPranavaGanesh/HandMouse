@@ -5,12 +5,21 @@ public struct GestureGuideView: View {
     
     public var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Gesture Controls")
-                .font(.system(size: 13, weight: .bold))
-                .foregroundColor(.secondary)
-                .textCase(.uppercase)
+            HStack {
+                Text("Gesture Controls")
+                    .font(.system(size: 13, weight: .bold, design: .rounded))
+                    .foregroundColor(.white.opacity(0.8))
+                Spacer()
+                Text("Live Feedback")
+                    .font(.system(size: 10, weight: .medium, design: .monospaced))
+                    .foregroundColor(.cyan)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(Color.cyan.opacity(0.12))
+                    .cornerRadius(4)
+            }
             
-            VStack(spacing: 8) {
+            VStack(spacing: 9) {
                 gestureCard(
                     number: "1",
                     emoji: "☝️",
@@ -39,7 +48,7 @@ public struct GestureGuideView: View {
                     icon: "hand.draw.fill",
                     title: "Pinch & Move",
                     subtitle: "Move Windows / Drag",
-                    description: "Pinch thumb and index on a window title bar and move your hand. Release to drop!",
+                    description: "Pinch on a window title bar, hold for >0.3s, and move your hand. Release to drop!",
                     color: .red,
                     isActive: currentGesture == .pinchAndMove
                 )
@@ -74,29 +83,40 @@ public struct GestureGuideView: View {
             // Number & Icon Badge
             ZStack {
                 Circle()
-                    .fill(isActive ? color : Color.secondary.opacity(0.15))
-                    .frame(width: 34, height: 34)
+                    .fill(isActive ? color.opacity(0.35) : Color.white.opacity(0.08))
+                    .frame(width: 36, height: 36)
+                
+                Circle()
+                    .stroke(isActive ? color : Color.white.opacity(0.15), lineWidth: 1)
+                    .frame(width: 36, height: 36)
                 
                 Text(emoji)
-                    .font(.system(size: 16))
+                    .font(.system(size: 17))
             }
             
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 6) {
                     Text("\(number). \(title)")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundColor(isActive ? color : .primary)
+                        .foregroundColor(isActive ? color : .white)
                     
                     Spacer()
                     
                     if isActive {
                         Text("ACTIVE")
-                            .font(.system(size: 9, weight: .bold))
-                            .padding(.horizontal, 6)
+                            .font(.system(size: 9, weight: .bold, design: .rounded))
+                            .padding(.horizontal, 7)
                             .padding(.vertical, 2)
-                            .background(color)
+                            .background(
+                                LinearGradient(
+                                    colors: [color, color.opacity(0.8)],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
                             .foregroundColor(.white)
                             .cornerRadius(4)
+                            .shadow(color: color.opacity(0.5), radius: 6, x: 0, y: 1)
                     }
                 }
                 
@@ -111,14 +131,7 @@ public struct GestureGuideView: View {
             }
         }
         .padding(10)
-        .background(
-            RoundedRectangle(cornerRadius: 10)
-                .fill(isActive ? color.opacity(0.12) : Color(NSColor.controlBackgroundColor))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(isActive ? color : Color.clear, lineWidth: 1.5)
-                )
-        )
+        .liquidGlassCard(cornerRadius: 14, isGlowing: isActive, glowColor: color)
         .animation(.easeInOut(duration: 0.2), value: isActive)
     }
 }

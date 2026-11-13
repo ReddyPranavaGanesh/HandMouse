@@ -29,6 +29,6 @@ public struct HandMouseApp: App {
         }
         .windowStyle(.titleBar)
         .windowToolbarStyle(.unified)
-        .defaultSize(width: 820, height: 520)
+        .defaultSize(width: 860, height: 540)
     }
 }
